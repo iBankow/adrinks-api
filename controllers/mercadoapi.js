@@ -1,38 +1,17 @@
-const mercadopago = require("mercadopago");
+const axios = require("axios");
 
-mercadopago.configurations.setAccessToken(process.env.ACCESS_TOKEN);
-
-//window.Mercadopago.setPublishableKey(process.env.PUBLIC_KEY);
+const api = axios.create({
+  baseURL: `https://api.mercadopago.com/checkout/preferences?access_token=${process.env.ACCESS_TOKEN}`,
+});
 
 module.exports = {
-  pay(req, res) {
-    var payment_data = {
-      transaction_amount: Number(req.body.transactionAmount),
-      token: req.body.token,
-      description: req.body.description,
-      installments: Number(req.body.installments),
-      payment_method_id: req.body.paymentMethodId,
-      issuer_id: req.body.issuerId,
-      payer: {
-        email: req.body.payer.email,
-        identification: {
-          type: req.body.payer.identification.docType,
-          number: req.body.payer.identification.docNumber,
-        },
-      },
-    };
-
-    mercadopago.payment
-      .save(payment_data)
-      .then(function (response) {
-        res.status(response.status).json({
-          status: response.body.status,
-          message: response.body.status_detail,
-          id: response.body.id,
-        });
-      })
-      .catch(function (error) {
-        res.status(error.status).send(error);
-      });
+  async pay(req, res) {
+    console.log(process.env.ACCESS_TOKEN);
+    const response = await api.post("", req.body);
+    res.send(response.data.init_point);
   },
 };
+
+//const mercadopago = require("mercadopago");
+//mercadopago.configurations.setAccessToken(process.env.ACCESS_TOKEN);
+//https://api.mercadopago.com/checkout/preferences?access_token=TEST-13070538375753-070112-76183b453f9c0639634acd1ed83d58cc-289115739";
