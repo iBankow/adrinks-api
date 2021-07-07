@@ -18,4 +18,12 @@ module.exports = {
       }
     );
   },
+  async getItemById(id) {
+    const item = await db.query(
+      `SELECT * FROM items
+      WHERE id = $1`,
+      [id]
+    );
+    return item.rows[0];
+  },
 };
